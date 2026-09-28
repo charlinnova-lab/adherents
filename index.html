@@ -1,4 +1,4 @@
-<!-- STYLE EMBARQUÉ DIRECTEMENT -->
+<!-- STYLES -->
 <style>
   .innova-directory-wrapper {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -144,9 +144,10 @@
     <button class="filter-btn active" data-category="all">Tous</button>
     <button class="filter-btn" data-category="Santé">Santé</button>
     <button class="filter-btn" data-category="Numérique">Numérique</button>
-    <button class="filter-btn" data-category="Énergie">Énergie</button>
+    <button class="filter-btn" data-category="Energie">Energie</button>
     <button class="filter-btn" data-category="Incubateur & Accélérateur">Incubateur & Accélérateur</button>
     <button class="filter-btn" data-category="Économie Circulaire">Économie Circulaire</button>
+    <button class="filter-btn" data-category="Industries Culturelles & Créatives">Industries Culturelles & Créatives</button>
     <button class="filter-btn" data-category="Territoriale">Territoriale</button>
     <button class="filter-btn" data-category="Autre">Autre</button>
   </div>
@@ -163,6 +164,21 @@
     let allRecords = [];
     let currentCategory = "all";
     let currentSearch = "";
+
+    function getStructureName(fields) {
+      if (!fields) return "Structure sans nom";
+      return fields["Structure | Rasion Sociale"] 
+          || fields["Structure | Raison Sociale"] 
+          || fields["Structure | Raison sociale"]
+          || fields["Raison Sociale"] 
+          || fields["Nom"] 
+          || fields["Nom de la structure"] 
+          || "Structure sans nom";
+    }
+
+    function normalizeStr(str) {
+      return (str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    }
 
     function chargerDonnees() {
       const container = document.getElementById("membersGrid") || document.getElementById("cards-container");
@@ -189,14 +205,22 @@
 
       const filtrés = allRecords.filter(record => {
         const fields = record.fields || {};
-        const name = (fields["Structure | Raison Sociale"] || fields["Nom"] || fields["Nom de la structure"] || "").toLowerCase();
-        const description = (fields["Description"] || fields["Présentation"] || "").toLowerCase();
+        
+        const name = normalizeStr(getStructureName(fields));
+        const description = normalizeStr(fields["Description"] || fields["Présentation"]);
         
         const communityRaw = fields["🤝Communauté pour site web"] || fields["Communauté"] || "";
         const communityArray = Array.isArray(communityRaw) ? communityRaw : [communityRaw];
+        const normalizedCommunities = communityArray.map(c => normalizeStr(c));
 
-        const matchesCategory = (currentCategory === "all") || communityArray.includes(currentCategory);
-        const matchesSearch = name.includes(currentSearch) || description.includes(currentSearch);
+        let matchesCategory = (currentCategory === "all");
+        if (!matchesCategory) {
+          const targetCategory = normalizeStr(currentCategory);
+          matchesCategory = normalizedCommunities.some(c => c === targetCategory || c.includes(targetCategory));
+        }
+
+        const searchTarget = normalizeStr(currentSearch);
+        const matchesSearch = !searchTarget || name.includes(searchTarget) || description.includes(searchTarget);
 
         return matchesCategory && matchesSearch;
       });
@@ -210,7 +234,7 @@
 
       filtrés.forEach(record => {
         const fields = record.fields || {};
-        const name = fields["Structure | Raison Sociale"] || fields["Nom"] || fields["Nom de la structure"] || "Structure sans nom";
+        const name = getStructureName(fields);
 
         let logoUrl = "";
         if (Array.isArray(fields["Logo"]) && fields["Logo"].length > 0) {
@@ -241,7 +265,7 @@
       const searchInput = document.getElementById("directorySearch");
       if (searchInput) {
         searchInput.addEventListener("input", (e) => {
-          currentSearch = e.target.value.toLowerCase().trim();
+          currentSearch = e.target.value;
           afficherCartes();
         });
       }
