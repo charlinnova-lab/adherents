@@ -165,15 +165,17 @@
     let currentCategory = "all";
     let currentSearch = "";
 
+    // Mappage ciblé : prend prioritairement "Structure | Rasion Sociale"
     function getStructureName(fields) {
-      if (!fields) return "Structure sans nom";
-      return fields["Structure | Rasion Sociale"] 
-          || fields["Structure | Raison Sociale"] 
-          || fields["Structure | Raison sociale"]
-          || fields["Raison Sociale"] 
-          || fields["Nom"] 
-          || fields["Nom de la structure"] 
-          || "Structure sans nom";
+      if (!fields) return "";
+      
+      const val = fields["Structure | Rasion Sociale"] 
+               || fields["Structure | Raison Sociale"] 
+               || fields["Structure"]
+               || fields["Nom"] 
+               || fields["Nom de la structure"];
+
+      return (typeof val === "string") ? val.trim() : "";
     }
 
     function normalizeStr(str) {
@@ -253,7 +255,7 @@
           <div>
             ${logoUrl ? `<div class="innova-card-logo"><img src="${logoUrl}" alt="${name}"></div>` : ""}
             ${community ? `<span class="innova-badge">${community}</span>` : ""}
-            <h3 class="innova-card-title">${name}</h3>
+            ${name ? `<h3 class="innova-card-title">${name}</h3>` : ""}
             ${description ? `<p class="innova-card-description">${description}</p>` : ""}
           </div>
         `;
