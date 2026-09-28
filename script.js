@@ -1,5 +1,5 @@
 // URL de votre Worker Cloudflare reliant Airtable
-const API_URL = "https://portaitsexpo.charlottepiau-innova.workers.dev";
+const API_URL = "https://adherents.charlottepiau-innova.workers.dev/";
 
 let allAdherents = [];
 
