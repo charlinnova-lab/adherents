@@ -1,87 +1,138 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nos Adhérents — innov'a</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-  <section class="innova-members-section">
-    <div class="innova-members-header">
-      <h2>NOS ADHÉRENTS</h2>
-      <p class="subtitle">Réseau Innovation Hauts-de-France</p>
-      <a href="https://www.innov-a.com/adherer/" class="btn-adhere">J'ADHÈRE →</a>
-      <div class="breadcrumb">Accueil &gt; Carnet d'adresse &gt; <strong>Adhérents</strong></div>
+<div class="innova-directory-wrapper">
+  <!-- Barre de recherche & Filtres -->
+  <div class="innova-controls-bar">
+    <div class="innova-search-box">
+      <input type="text" id="directorySearch" placeholder="Rechercher une structure ou un mot-clé..." />
     </div>
 
-    <!-- Conteneur de la grille -->
-    <div id="membersGrid" class="innova-members-grid">
-      <p class="innova-loading-text">Chargement des adhérents...</p>
+    <div class="innova-filter-tags" id="filterTags">
+      <button class="filter-btn active" data-category="all">Tous</button>
+      <button class="filter-btn" data-category="Santé">Santé</button>
+      <button class="filter-btn" data-category="Numérique">Numérique</button>
+      <button class="filter-btn" data-category="Énergie">Énergie</button>
+      <button class="filter-btn" data-category="Incubateur & Accélérateur">Incubateur & Accélérateur</button>
+      <button class="filter-btn" data-category="Économie Circulaire">Économie Circulaire</button>
+      <button class="filter-btn" data-category="Territoriale">Territoriale</button>
+      <button class="filter-btn" data-category="Autre">Autre</button>
     </div>
-  </section>
+  </div>
 
-  <!-- SCRIPT INJECTÉ DIRECTEMENT -->
-  <script>
-    (function() {
-      const API_URL = "https://adherents.charlottepiau-innova.workers.dev/";
+  <!-- Conteneur de la grille -->
+  <div id="membersGrid" class="innova-members-grid">
+    <p class="innova-loading-text">Chargement des adhérents...</p>
+  </div>
+</div>
 
-      function chargerDonnees() {
-        const container = document.getElementById("membersGrid") || document.getElementById("cards-container");
-        if (!container) return;
+<!-- SCRIPT AUTONOME (Reprend la méthode qui a résolu le bug) -->
+<script>
+  (function() {
+    const API_URL = "https://adherents.charlottepiau-innova.workers.dev/";
+    let allRecords = [];
+    let currentCategory = "all";
+    let currentSearch = "";
 
-        fetch(API_URL)
-          .then(res => {
-            if (!res.ok) throw new Error("Erreur HTTP " + res.status);
-            return res.json();
-          })
-          .then(data => {
-            const records = data.records || [];
-            container.innerHTML = "";
+    function chargerDonnees() {
+      const container = document.getElementById("membersGrid") || document.getElementById("cards-container");
+      if (!container) return;
 
-            if (records.length === 0) {
-              container.innerHTML = "<p>Aucun adhérent trouvé.</p>";
-              return;
-            }
+      fetch(API_URL)
+        .then(res => {
+          if (!res.ok) throw new Error("Erreur HTTP " + res.status);
+          return res.json();
+        })
+        .then(data => {
+          allRecords = data.records || [];
+          afficherCartes();
+          configurerEcouteurs();
+        })
+        .catch(err => {
+          container.innerHTML = `<p style="color:red; grid-column: 1/-1; text-align: center;">Erreur : ${err.message}</p>`;
+        });
+    }
 
-            records.forEach(record => {
-              const fields = record.fields || {};
-              const name = fields["Nom"] || fields["Nom de la structure"] || "Sans nom";
-              let logoUrl = "";
-              if (Array.isArray(fields["Logo"]) && fields["Logo"].length > 0) {
-                logoUrl = fields["Logo"][0].url || "";
-              } else if (typeof fields["Logo"] === "string") {
-                logoUrl = fields["Logo"];
-              }
-              const description = fields["Description"] || fields["Présentation"] || "";
-              const communityRaw = fields["🤝Communauté pour site web"] || fields["Communauté"] || "";
-              const community = Array.isArray(communityRaw) ? communityRaw.join(", ") : communityRaw;
+    function afficherCartes() {
+      const container = document.getElementById("membersGrid") || document.getElementById("cards-container");
+      if (!container) return;
 
-              const card = document.createElement("div");
-              card.className = "innova-card";
-              card.innerHTML = `
-                ${logoUrl ? `<div class="innova-card-logo"><img src="${logoUrl}" alt="${name}"></div>` : ""}
-                <div class="innova-card-content">
-                  ${community ? `<span class="innova-badge">${community}</span>` : ""}
-                  <h3 class="innova-card-title">${name}</h3>
-                  ${description ? `<p class="innova-card-description">${description}</p>` : ""}
-                </div>
-              `;
-              container.appendChild(card);
-            });
-          })
-          .catch(err => {
-            container.innerHTML = `<p style="color:red;">Erreur : ${err.message}</p>`;
-          });
+      // Filtrage Recherche + Catégorie
+      const filtrés = allRecords.filter(record => {
+        const fields = record.fields || {};
+        
+        // Variable prioritaire : Structure | Raison Sociale
+        const name = (fields["Structure | Raison Sociale"] || fields["Nom"] || fields["Nom de la structure"] || "").toLowerCase();
+        const description = (fields["Description"] || fields["Présentation"] || "").toLowerCase();
+        
+        const communityRaw = fields["🤝Communauté pour site web"] || fields["Communauté"] || "";
+        const communityArray = Array.isArray(communityRaw) ? communityRaw : [communityRaw];
+
+        const matchesCategory = (currentCategory === "all") || communityArray.includes(currentCategory);
+        const matchesSearch = name.includes(currentSearch) || description.includes(currentSearch);
+
+        return matchesCategory && matchesSearch;
+      });
+
+      container.innerHTML = "";
+
+      if (filtrés.length === 0) {
+        container.innerHTML = "<p class='innova-no-results' style='grid-column: 1/-1; text-align: center; color: #666;'>Aucun adhérent ne correspond à votre recherche.</p>";
+        return;
       }
 
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", chargerDonnees);
-      } else {
-        chargerDonnees();
+      filtrés.forEach(record => {
+        const fields = record.fields || {};
+
+        // Mappage prioritaire sur "Structure | Raison Sociale"
+        const name = fields["Structure | Raison Sociale"] || fields["Nom"] || fields["Nom de la structure"] || "Structure sans nom";
+
+        let logoUrl = "";
+        if (Array.isArray(fields["Logo"]) && fields["Logo"].length > 0) {
+          logoUrl = fields["Logo"][0].url || "";
+        } else if (typeof fields["Logo"] === "string") {
+          logoUrl = fields["Logo"];
+        }
+
+        const description = fields["Description"] || fields["Présentation"] || "";
+        const communityRaw = fields["🤝Communauté pour site web"] || fields["Communauté"] || "";
+        const community = Array.isArray(communityRaw) ? communityRaw.join(", ") : communityRaw;
+
+        const card = document.createElement("div");
+        card.className = "innova-card";
+        card.innerHTML = `
+          <div>
+            ${logoUrl ? `<div class="innova-card-logo"><img src="${logoUrl}" alt="${name}"></div>` : ""}
+            ${community ? `<span class="innova-badge">${community}</span>` : ""}
+            <h3 class="innova-card-title">${name}</h3>
+            ${description ? `<p class="innova-card-description">${description}</p>` : ""}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function configurerEcouteurs() {
+      const searchInput = document.getElementById("directorySearch");
+      if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+          currentSearch = e.target.value.toLowerCase().trim();
+          afficherCartes();
+        });
       }
-    })();
-  </script>
-</body>
-</html>
+
+      const filterBtns = document.querySelectorAll(".filter-btn");
+      filterBtns.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          filterBtns.forEach(b => b.classList.remove("active"));
+          e.target.classList.add("active");
+          currentCategory = e.target.dataset.category;
+          afficherCartes();
+        });
+      });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", chargerDonnees);
+    } else {
+      chargerDonnees();
+    }
+  })();
+</script>
