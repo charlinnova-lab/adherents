@@ -1,4 +1,12 @@
 // URL de votre Worker Cloudflare reliant Airtable
+//# =========================================================
+//Adhérents
+//   innov'a (c) Charlotte Piau
+//   Création :28 sept 2026
+//   Last Modification : 
+
+//   IMPORTANT : Le token Airtable n'est PAS présent ici. Il est stocké comme secret dans Cloudflare.
+//========================================================= 
 const API_URL = "https://adherents.charlottepiau-innova.workers.dev/";
 
 let allAdherents = [];
