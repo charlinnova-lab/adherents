@@ -1,191 +1,92 @@
-/* ==========================================================================
-   1. REINITIALISATION ET VARIABLES GLOBALES
-   ========================================================================== */
-:root {
-  --primary-color: #0056b3;
-  --bg-color: #f8f9fa;
-  --card-bg: #ffffff;
-  --text-color: #212529;
-  --text-muted: #6c757d;
-  --border-color: #e9ecef;
-  --badge-bg: #e7f1ff;
-  --badge-text: #0056b3;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --radius: 12px;
+/* Section Nos Adhérents */
+.innova-members-section {
+  font-family: inherit;
+  margin: 40px 0;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  padding: 20px;
-  line-height: 1.5;
-}
-
-/* ==========================================================================
-   2. FILTRES ET BARRE DE RECHERCHE
-   ========================================================================== */
-.controls-container {
-  max-width: 1200px;
-  margin: 0 auto 30px auto;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  align-items: center;
-}
-
-/* Barre de recherche */
-#search-input {
-  width: 100%;
-  max-width: 500px;
-  padding: 12px 20px;
-  border: 1px solid var(--border-color);
-  border-radius: 30px;
-  font-size: 1rem;
-  outline: none;
-  box-shadow: var(--shadow-sm);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-#search-input:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.15);
-}
-
-/* Boutons de filtres */
-#filter-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-}
-
-.filter-btn {
-  background-color: var(--card-bg);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  padding: 8px 18px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow-sm);
-}
-
-.filter-btn:hover {
-  background-color: #f1f3f5;
-}
-
-.filter-btn.active {
-  background-color: var(--primary-color);
-  color: #ffffff;
-  border-color: var(--primary-color);
-}
-
-/* ==========================================================================
-   3. GRILLE ET CARTES DES ADHÉRENTS
-   ========================================================================== */
-#cards-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 25px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  /* Annulation du curseur cliquable */
-  cursor: default !important;
-}
-
-/* Suppression formelle des flèches et pseudo-éléments */
-.card::after,
-.card::before,
-.card-arrow,
-.card-icon {
-  display: none !important;
-  content: none !important;
-}
-
-/* Zone du logo */
-.card-logo {
-  height: 160px;
-  background-color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.card-logo img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-/* Contenu de la carte */
-.card-content {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-/* Badge Communauté */
-.badge {
-  display: inline-block;
-  align-self: flex-start;
-  background-color: var(--badge-bg);
-  color: var(--badge-text);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 12px;
-  margin-bottom: 12px;
+/* En-tête */
+.innova-members-header h2 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0a2240;
+  margin-bottom: 4px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: -0.5px;
 }
 
-.card-title {
-  font-size: 1.15rem;
+.innova-members-header .subtitle {
+  font-size: 16px;
+  color: #333333;
+  margin-bottom: 12px;
+}
+
+.innova-members-header .btn-adhere {
+  display: inline-block;
+  color: #0a2240;
+  font-weight: 800;
+  text-decoration: underline;
+  margin-bottom: 12px;
+  transition: opacity 0.2s ease;
+}
+
+.innova-members-header .btn-adhere:hover {
+  opacity: 0.8;
+}
+
+.innova-members-header .breadcrumb {
+  font-size: 14px;
+  color: #666666;
+  margin-bottom: 24px;
+}
+
+.innova-members-header .breadcrumb strong {
+  color: #0a2240;
+}
+
+/* Grille d'affichage des cartes adhérents */
+.innova-members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+/* Cartes adhérents */
+.innova-member-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.innova-member-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(10, 34, 64, 0.08);
+}
+
+.innova-member-card h3 {
+  font-size: 18px;
   font-weight: 700;
-  margin-bottom: 8px;
-  color: var(--text-color);
+  color: #0a2240;
+  margin: 0 0 8px 0;
 }
 
-.card-description {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  line-height: 1.4;
+.innova-member-card p {
+  font-size: 14px;
+  color: #4a5568;
+  line-height: 1.5;
+  margin: 0;
 }
 
-/* ==========================================================================
-   4. MESSAGES D'ÉTAT (Chargement / Erreur / Vide)
-   ========================================================================== */
-.loading, .error, .no-results {
-  grid-column: 1 / -1;
+/* Message de chargement / état vide */
+.innova-loading-text {
   text-align: center;
-  padding: 40px 20px;
-  font-size: 1.1rem;
-  color: var(--text-muted);
-}
-
-.error {
-  color: #d9534f;
+  color: #666666;
+  font-style: italic;
+  grid-column: 1 / -1;
+  padding: 40px 0;
 }
