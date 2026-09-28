@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Adhérents — innov'a</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- En-tête -->
+    <header class="header-container">
+        <div class="header-left">
+            <div class="logo-title">
+                <span class="icon-puzzle">🧩</span>
+                <h1>NOS ADHÉRENTS</h1>
+            </div>
+            <p class="subtitle">Réseau Innovation Hauts-de-France</p>
+        </div>
+        <a href="#adherer" class="btn-adhere">J'ADHÈRE &rarr;</a>
+    </header>
+
+    <main>
+        <!-- Fil d'Ariane -->
+        <nav class="breadcrumb">
+            <span>Accueil</span> &gt; <span>Carnet d'adresse</span> &gt; <strong>Adhérents</strong>
+        </nav>
+
+        <!-- Barre de recherche et filtres -->
+        <section id="filters-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Rechercher un adhérent, un mot-clé...">
+            </div>
+            
+            <div class="filter-buttons">
+                <span class="filter-label">Catégorie :</span>
+                <button class="filter-btn active" data-filter="all">Tous</button>
+                <button class="filter-btn" data-filter="incubateur">Incubateur & Accélérateur</button>
+                <button class="filter-btn" data-filter="territoriale">Territoriale</button>
+                <button class="filter-btn" data-filter="écologie">Écologie & Durable</button>
+                <button class="filter-btn" data-filter="numérique">Numérique & Conseils</button>
+                <button class="filter-btn" data-filter="autre">Autre</button>
+            </div>
+        </section>
+
+        <!-- Grille des Adhérents -->
+        <section id="gallery">
+            <div class="loading">Chargement des adhérents…</div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
