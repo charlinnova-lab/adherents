@@ -1,29 +1,162 @@
-<div class="innova-directory-wrapper">
-  <!-- Barre de recherche & Filtres -->
-  <div class="innova-controls-bar">
-    <div class="innova-search-box">
-      <input type="text" id="directorySearch" placeholder="Rechercher une structure ou un mot-clé..." />
-    </div>
+<!-- STYLE EMBARQUÉ DIRECTEMENT -->
+<style>
+  .innova-directory-wrapper {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    margin: 20px 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
 
-    <div class="innova-filter-tags" id="filterTags">
-      <button class="filter-btn active" data-category="all">Tous</button>
-      <button class="filter-btn" data-category="Santé">Santé</button>
-      <button class="filter-btn" data-category="Numérique">Numérique</button>
-      <button class="filter-btn" data-category="Énergie">Énergie</button>
-      <button class="filter-btn" data-category="Incubateur & Accélérateur">Incubateur & Accélérateur</button>
-      <button class="filter-btn" data-category="Économie Circulaire">Économie Circulaire</button>
-      <button class="filter-btn" data-category="Territoriale">Territoriale</button>
-      <button class="filter-btn" data-category="Autre">Autre</button>
-    </div>
+  .innova-directory-wrapper * {
+    box-sizing: border-box;
+  }
+
+  /* Barre de recherche */
+  .innova-search-box {
+    margin-bottom: 16px;
+  }
+
+  .innova-search-box input {
+    width: 100%;
+    max-width: 420px;
+    padding: 10px 16px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  .innova-search-box input:focus {
+    border-color: #0a2240;
+    box-shadow: 0 0 0 3px rgba(10, 34, 64, 0.1);
+  }
+
+  /* Filtres / Boutons */
+  .innova-filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .innova-filter-tags .filter-btn {
+    background-color: #ffffff;
+    color: #0a2240;
+    border: 1px solid #cbd5e1;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  .innova-filter-tags .filter-btn:hover {
+    background-color: #f1f5f9;
+    border-color: #0a2240;
+  }
+
+  .innova-filter-tags .filter-btn.active {
+    background-color: #0a2240;
+    color: #ffffff;
+    border-color: #0a2240;
+  }
+
+  /* Grille des membres */
+  .innova-members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  /* Cartes individuelles */
+  .innova-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  }
+
+  .innova-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(10, 34, 64, 0.08);
+    border-color: #0a2240;
+  }
+
+  .innova-card-logo {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .innova-card-logo img {
+    max-height: 100%;
+    max-width: 85%;
+    object-fit: contain;
+  }
+
+  .innova-badge {
+    display: inline-block;
+    background-color: #ffc700;
+    color: #0a2240;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .innova-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0a2240;
+    margin: 4px 0 6px 0;
+    line-height: 1.3;
+  }
+
+  .innova-card-description {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.4;
+    margin: 0;
+  }
+</style>
+
+<!-- STRUCTURE HTML -->
+<div class="innova-directory-wrapper">
+  <div class="innova-search-box">
+    <input type="text" id="directorySearch" placeholder="Rechercher une structure ou un mot-clé..." />
   </div>
 
-  <!-- Conteneur de la grille -->
+  <div class="innova-filter-tags" id="filterTags">
+    <button class="filter-btn active" data-category="all">Tous</button>
+    <button class="filter-btn" data-category="Santé">Santé</button>
+    <button class="filter-btn" data-category="Numérique">Numérique</button>
+    <button class="filter-btn" data-category="Énergie">Énergie</button>
+    <button class="filter-btn" data-category="Incubateur & Accélérateur">Incubateur & Accélérateur</button>
+    <button class="filter-btn" data-category="Économie Circulaire">Économie Circulaire</button>
+    <button class="filter-btn" data-category="Territoriale">Territoriale</button>
+    <button class="filter-btn" data-category="Autre">Autre</button>
+  </div>
+
   <div id="membersGrid" class="innova-members-grid">
-    <p class="innova-loading-text">Chargement des adhérents...</p>
+    <p style="grid-column: 1/-1; text-align: center; color: #666;">Chargement des adhérents...</p>
   </div>
 </div>
 
-<!-- SCRIPT AUTONOME (Reprend la méthode qui a résolu le bug) -->
+<!-- SCRIPT JS -->
 <script>
   (function() {
     const API_URL = "https://adherents.charlottepiau-innova.workers.dev/";
@@ -54,11 +187,8 @@
       const container = document.getElementById("membersGrid") || document.getElementById("cards-container");
       if (!container) return;
 
-      // Filtrage Recherche + Catégorie
       const filtrés = allRecords.filter(record => {
         const fields = record.fields || {};
-        
-        // Variable prioritaire : Structure | Raison Sociale
         const name = (fields["Structure | Raison Sociale"] || fields["Nom"] || fields["Nom de la structure"] || "").toLowerCase();
         const description = (fields["Description"] || fields["Présentation"] || "").toLowerCase();
         
@@ -74,14 +204,12 @@
       container.innerHTML = "";
 
       if (filtrés.length === 0) {
-        container.innerHTML = "<p class='innova-no-results' style='grid-column: 1/-1; text-align: center; color: #666;'>Aucun adhérent ne correspond à votre recherche.</p>";
+        container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #666;'>Aucun adhérent ne correspond à votre recherche.</p>";
         return;
       }
 
       filtrés.forEach(record => {
         const fields = record.fields || {};
-
-        // Mappage prioritaire sur "Structure | Raison Sociale"
         const name = fields["Structure | Raison Sociale"] || fields["Nom"] || fields["Nom de la structure"] || "Structure sans nom";
 
         let logoUrl = "";
