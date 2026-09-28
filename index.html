@@ -1,14 +1,87 @@
-<section class="innova-members-section">
-  <!-- En-tête -->
-  <div class="innova-members-header">
-    <h2>NOS ADHÉRENTS</h2>
-    <p class="subtitle">Réseau Innovation Hauts-de-France</p>
-    <a href="https://www.innov-a.com/adherer/" class="btn-adhere">J'ADHÈRE →</a>
-    <div class="breadcrumb">Accueil &gt; Carnet d'adresse &gt; <strong>Adhérents</strong></div>
-  </div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nos Adhérents — innov'a</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-  <!-- Conteneur de la grille (détection dynamique de l'ID par JS) -->
-  <div id="membersGrid" class="innova-members-grid">
-    <p class="innova-loading-text">Chargement des adhérents...</p>
-  </div>
-</section>
+  <section class="innova-members-section">
+    <div class="innova-members-header">
+      <h2>NOS ADHÉRENTS</h2>
+      <p class="subtitle">Réseau Innovation Hauts-de-France</p>
+      <a href="https://www.innov-a.com/adherer/" class="btn-adhere">J'ADHÈRE →</a>
+      <div class="breadcrumb">Accueil &gt; Carnet d'adresse &gt; <strong>Adhérents</strong></div>
+    </div>
+
+    <!-- Conteneur de la grille -->
+    <div id="membersGrid" class="innova-members-grid">
+      <p class="innova-loading-text">Chargement des adhérents...</p>
+    </div>
+  </section>
+
+  <!-- SCRIPT INJECTÉ DIRECTEMENT -->
+  <script>
+    (function() {
+      const API_URL = "https://adherents.charlottepiau-innova.workers.dev/";
+
+      function chargerDonnees() {
+        const container = document.getElementById("membersGrid") || document.getElementById("cards-container");
+        if (!container) return;
+
+        fetch(API_URL)
+          .then(res => {
+            if (!res.ok) throw new Error("Erreur HTTP " + res.status);
+            return res.json();
+          })
+          .then(data => {
+            const records = data.records || [];
+            container.innerHTML = "";
+
+            if (records.length === 0) {
+              container.innerHTML = "<p>Aucun adhérent trouvé.</p>";
+              return;
+            }
+
+            records.forEach(record => {
+              const fields = record.fields || {};
+              const name = fields["Nom"] || fields["Nom de la structure"] || "Sans nom";
+              let logoUrl = "";
+              if (Array.isArray(fields["Logo"]) && fields["Logo"].length > 0) {
+                logoUrl = fields["Logo"][0].url || "";
+              } else if (typeof fields["Logo"] === "string") {
+                logoUrl = fields["Logo"];
+              }
+              const description = fields["Description"] || fields["Présentation"] || "";
+              const communityRaw = fields["🤝Communauté pour site web"] || fields["Communauté"] || "";
+              const community = Array.isArray(communityRaw) ? communityRaw.join(", ") : communityRaw;
+
+              const card = document.createElement("div");
+              card.className = "innova-card";
+              card.innerHTML = `
+                ${logoUrl ? `<div class="innova-card-logo"><img src="${logoUrl}" alt="${name}"></div>` : ""}
+                <div class="innova-card-content">
+                  ${community ? `<span class="innova-badge">${community}</span>` : ""}
+                  <h3 class="innova-card-title">${name}</h3>
+                  ${description ? `<p class="innova-card-description">${description}</p>` : ""}
+                </div>
+              `;
+              container.appendChild(card);
+            });
+          })
+          .catch(err => {
+            container.innerHTML = `<p style="color:red;">Erreur : ${err.message}</p>`;
+          });
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", chargerDonnees);
+      } else {
+        chargerDonnees();
+      }
+    })();
+  </script>
+</body>
+</html>
