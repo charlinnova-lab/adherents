@@ -1,7 +1,7 @@
 //=========================================================
 // Adhérents — innov'a (c) Charlotte Piau
 // Création : 28 sept 2026
-// Modification : Retrait définitif de la recherche, des filtres et des tags de communauté
+// Modification 22.10.26 : Retrait définitif de la recherche, des filtres et des tags de communauté
 //
 // IMPORTANT : Le token Airtable n'est PAS présent ici. Il est stocké comme secret dans Cloudflare.
 //========================================================= 
